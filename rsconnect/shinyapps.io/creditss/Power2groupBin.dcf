@@ -1,0 +1,12 @@
+name: Power2groupBin
+title: Power2groupBin
+username:
+account: creditss
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3595396
+bundleId: 4190772
+url: https://creditss.shinyapps.io/Power2groupBin/
+when: 1612674187.77516
+asMultiple: FALSE
+asStatic: FALSE
