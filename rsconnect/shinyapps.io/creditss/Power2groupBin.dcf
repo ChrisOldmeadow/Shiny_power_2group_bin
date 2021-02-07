@@ -5,8 +5,8 @@ account: creditss
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3595396
-bundleId: 4190772
+bundleId: 4190842
 url: https://creditss.shinyapps.io/Power2groupBin/
-when: 1612674187.77516
+when: 1612676594.49824
 asMultiple: FALSE
 asStatic: FALSE

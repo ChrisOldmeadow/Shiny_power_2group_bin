@@ -27,7 +27,8 @@ ui <- fluidPage(
                               choices = list(
                                   "Power" = 1,
                                  "Sample size" = 2,
-                                 "Detectable difference" = 3), selected = 1
+                                 "Detectable difference" = 3,
+                                 "Power (exact)" = 4), selected = 1
                          ),
                         conditionalPanel("input.type == 1",  # power
                             numericInput(
@@ -58,6 +59,19 @@ ui <- fluidPage(
                                 "p", "Control group proportion", value = .05, min = 0.001, max = 0.99),
                             numericInput(
                                 "alpha3", "Type 1 error rate", value = .05)
+                        ),
+                        conditionalPanel("input.type == 4",  # power
+                                        numericInput(
+                                          "n15", "Sample size (group 1)", value = 100, min = 5, max = 100000),
+                                        numericInput(
+                                          "n25", "Sample size (group 2)", value = 100, min = 5, max = 100000),
+                                        numericInput(
+                                          "p15", "Prop group 1",value = 0.5,min = 0.001,max = 0.99),
+                                        numericInput(
+                                          "p25", "Prop group 2", value = 0.6, min = 0.001,max = 0.99),
+                                        checkboxInput("sim", "Simulate power", value = TRUE),
+                                        numericInput(
+                                          "alpha5", "Type I error rate", min = 0.000000001, max = 0.2, value = .05)
                         )
                     ),
                     conditionalPanel("input.hyp == 2",
@@ -99,10 +113,16 @@ server <- function(input, output) {
                        if(input$hyp == 1 & input$type ==3){
                            power.prop.test(n=input$n3, power=input$pow3, p1 = input$p, p2=NULL, sig.level = input$alpha3)
                        }
+                     else{
+                       if(input$hyp == 1 & input$type ==4){
+                        p<- Exact::power.exact.test(n1=input$n15, n2 = input$n25, p1 = input$p15, p2 = input$p25, simulation = input$sim, alpha = input$alpha5)
+                        list(power = p$power, n = input$n15, sig.level = input$alpha5, p2 = input$p25, p1 = input$p15 )
+                        }
                        else{
                         p <- pow_noninf_bin(numsims = input$nsim, nperarm = input$n4, ctrlrate = input$ctrl, trmtrate = input$trtm, delta = input$delta)
                         list(power = p, n = input$n4, sig.level = input$alpha4)
-                          }
+                       }
+                     }
                    }
                }
         output$txtOutput = renderText({
@@ -113,8 +133,6 @@ server <- function(input, output) {
             paste0("A sample size of ", res$n, " in each group will give ", round(res$p*100,1), "% power to declare the intervention is non-inferior to the control with a type 1 error rate of ", round(res$sig.level*100,2), "%")
           }
         })
-        
-      
     })
 }
 
